@@ -1,0 +1,21 @@
+# Visual Studio Code
+.vscode/
+
+# IntelliJ IDEA
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.log
+*.cache
+*.aux
+*.out
+*.toc
+*.nav
+*.snm
+*.vrb
+*.synctex.gz(busy)
