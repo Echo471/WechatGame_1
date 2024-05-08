@@ -1,25 +1,25 @@
 import os
 import json
-import subprocess
 import re
 import glob
+import subprocess
 
 PROTOC_PATH = 'protoc.exe'  # 替换为protoc的实际路径
 PROTOC_TS_PLUGIN_PATH = 'protoc-gen-ts.cmd'  # 替换为protoc-gen-ts的实际路径
 OUTPUT_DIR = 'proto/'
 PROTO_FILES_PATH = 'proto/*.proto'  # 替换为你的.proto文件路径
-MESSAGE_IDS_FILE = 'MessageIds.ts'
+MESSAGE_IDS_FILE_TS = 'MessageIds.ts'
+MESSAGE_IDS_FILE_JAVA = 'MessageIds.java'
 
 def generate_dts_files():
-    # for proto_file in glob.glob(PROTO_FILES_PATH, recursive=True):
-    #     cmd = [
-    #         PROTOC_PATH,
-    #         '--plugin=protoc-gen-ts={}'.format(PROTOC_TS_PLUGIN_PATH),
-    #         '--ts_out={}/'.format(OUTPUT_DIR),
-    #         proto_file
-    #     ]
-    #     subprocess.run(cmd, check=True)
-    pass
+    for proto_file in glob.glob(PROTO_FILES_PATH, recursive=True):
+        cmd = [
+            PROTOC_PATH,
+            '--plugin=protoc-gen-ts={}'.format(PROTOC_TS_PLUGIN_PATH),
+            '--ts_out={}/'.format(OUTPUT_DIR),
+            proto_file
+        ]
+        subprocess.run(cmd, check=True)
 
 def extract_message_ids():
     message_ids = {}
@@ -37,7 +37,7 @@ def extract_message_ids():
 
 def write_mapping_to_ts(message_ids, proto_files):
     ts_content = ''
-    
+
     # 添加导入语句
     for proto_file in proto_files:
         with open(proto_file, 'r') as f:
@@ -63,11 +63,44 @@ def write_mapping_to_ts(message_ids, proto_files):
     ts_content += '    }\n'
     ts_content += '}\n'
 
-    with open(MESSAGE_IDS_FILE, 'w', encoding='utf-8') as output_file:
+    with open(MESSAGE_IDS_FILE_TS, 'w', encoding='utf-8') as output_file:
         output_file.write(ts_content)
+
+def write_mapping_to_java(message_ids):
+    java_content = 'package com.example.message;\n\n'
+
+    java_content += 'import java.util.HashMap;\n'
+    java_content += 'import java.util.Map;\n\n'
+
+    java_content += 'public enum MessageIds {\n'
+    for id, message_name in message_ids.items():
+        java_content += f'    {message_name}({id}),\n'
+    java_content += '    UNKNOWN(-1);\n\n'
+
+    java_content += '    private int id;\n'
+    java_content += '    private static final Map<Integer, MessageIds> idToEnumMap = new HashMap<>();\n\n'
+    java_content += '    static {\n'
+    for id, message_name in message_ids.items():
+        java_content += f'        idToEnumMap.put({id}, {message_name});\n'
+    java_content += '    }\n\n'
+
+    java_content += '    private MessageIds(int id) {\n'
+    java_content += '        this.id = id;\n'
+    java_content += '    }\n\n'
+    java_content += '    public int getId() {\n'
+    java_content += '        return id;\n'
+    java_content += '    }\n\n'
+    java_content += '    public static MessageIds fromId(int id) {\n'
+    java_content += '        return idToEnumMap.getOrDefault(id, UNKNOWN);\n'
+    java_content += '    }\n\n'
+    java_content += '}\n'
+
+    with open(MESSAGE_IDS_FILE_JAVA, 'w', encoding='utf-8') as output_file:
+        output_file.write(java_content)
 
 if __name__ == '__main__':
     generate_dts_files()
     proto_files = glob.glob('proto/*.proto', recursive=True)  # 获取.proto文件列表
     message_ids = extract_message_ids()
     write_mapping_to_ts(message_ids, proto_files)  # 添加proto_files参数
+    write_mapping_to_java(message_ids)
