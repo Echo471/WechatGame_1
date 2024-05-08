@@ -1,19 +1,7 @@
 {
-  "name": "client",
-  "uuid": "f5e0a043-ca8c-4c0f-bd01-354a7742954e",
+  "name": "client2",
+  "uuid": "b2c863da-5623-46fb-8b76-91b67bb5b6c8",
   "creator": {
     "version": "3.8.2"
-  },
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@types/google-protobuf": "^3.15.12",
-    "protobufjs": "^5.0.3"
   }
 }
