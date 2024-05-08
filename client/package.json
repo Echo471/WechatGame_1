@@ -3,5 +3,8 @@
   "uuid": "b2c863da-5623-46fb-8b76-91b67bb5b6c8",
   "creator": {
     "version": "3.8.2"
+  },
+  "dependencies": {
+    "google-protobuf": "^3.21.2"
   }
 }

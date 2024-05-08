@@ -4,3 +4,8 @@ message Player {
     uint32 id = 1;
     string name = 2;
 }
+
+message Player2 {
+    uint32 id = 1;
+    string name = 2;
+}
