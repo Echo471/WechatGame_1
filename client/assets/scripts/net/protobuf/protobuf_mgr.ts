@@ -1,9 +1,6 @@
 import { _decorator, Component, Node } from 'cc';
 import { SingleBase } from '../../util/single_base';
 import { GameMgr } from '../../game_mgr';
-import './message/proto/test';
-import './message/proto/test';
-import './message/proto/test';
 const { ccclass, property } = _decorator;
 
 
@@ -21,9 +18,12 @@ export class ProtobufMgr extends SingleBase<ProtobufMgr>{
 }
 
 
+import { Player } from "./message/proto/test";
+import { Player2 } from "./message/proto/test";
 
 export const messageMappings = {
-    1: Player,
+    1: Player2,
+    2: Player,
 };
 
 // 注意：这里使用字符串而非实际类引用，因为直接引用由.proto生成的类在TypeScript中不可行。

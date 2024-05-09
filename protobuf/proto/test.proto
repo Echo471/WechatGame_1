@@ -1,11 +1,51 @@
 syntax = "proto3";
 
-message Player {
+message Player1 {
     uint32 id = 1;
     string name = 2;
 }
 
-message Player2 {
+message Player12 {
+    uint32 id = 1;
+    string name = 2;
+}
+
+message Player13 {
+    uint32 id = 1;
+    string name = 2;
+}
+
+message Player14 {
+    uint32 id = 1;
+    string name = 2;
+}
+
+message Player15 {
+    uint32 id = 1;
+    string name = 2;
+}
+
+message Player16 {
+    uint32 id = 1;
+    string name = 2;
+}
+
+message Player17 {
+    uint32 id = 1;
+    string name = 2;
+}
+
+message Player18 {
+    uint32 id = 1;
+    string name = 2;
+}
+
+message Player19 {
+    uint32 id = 1;
+    string name = 2;
+}
+
+message Player110 {
     uint32 id = 1;
     string name = 2;
 }
