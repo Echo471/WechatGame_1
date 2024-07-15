@@ -7,14 +7,9 @@ from module.module_register import ModuleRegister
 
 def register_module():
     # register module
-    ## Log 是最基础的模块 需要最先注册
+    # Log 是最基础的模块 需要最先注册
     ModuleRegister.register(EModule.LOGGER, LogModule())
 
 
 if __name__ == '__main__':
     register_module()
-
-    Log.info("this is a info log")
-    Log.warning("this is a warning log")
-    Log.error("this is a error log")
-
