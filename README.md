@@ -7,8 +7,9 @@
 ## client
 - 客户端工程cocos creator 3.8.2
 
-## server框架
-- https://gitee.com/iohao/ioGame
+## server
+
+### 环境 python 3.12.4
 
 
 # 客户端proto文件处理
