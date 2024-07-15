@@ -44,3 +44,7 @@ node_modules/
 # WebStorm
 #//////////////////////////
 .idea/
+
+server/saved/
+__pycache__/
+*.pyc
