@@ -3,6 +3,14 @@
   "extends": "./temp/tsconfig.cocos.json",
   /* Add your custom configuration here. */
   "compilerOptions": {
-    "strict": false
-  }
+    "strict": false,
+  },
+  "include": [
+		"**/*.ts"
+	],
+	"exclude": [
+		"templates/**/*.ts",
+		"lib/typescript-plus/lib/*.d.ts",
+		"TsProj"
+	],
 }

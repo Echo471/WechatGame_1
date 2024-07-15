@@ -22,5 +22,5 @@ for %%i in (%PROTO_DIR%\*.proto) do (
 @echo start gen ts protobuf class 
 protoc.exe  .\proto\*.proto --plugin=protoc-gen-ts.cmd --ts_out=..\client\assets\scripts\net\protobuf\message\
 
-:: generate_mapping.exe --protoc_path="protoc.exe" --protoc_ts_plugin_path="protoc-gen-ts.cmd" --proto_files_path=proto\*.proto --message_ids_file_ts=..\client\assets\scripts\net\protobuf\message_ids.ts --message_ids_file_java=..\server\message_ids.java
+generate_mapping.exe --protoc_path="protoc.exe" --protoc_ts_plugin_path="protoc-gen-ts.cmd" --proto_files_path=proto\*.proto --message_ids_file_ts=..\client\assets\scripts\net\protobuf\message_ids.ts 
 pause

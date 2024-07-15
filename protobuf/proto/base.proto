@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message LoginInfo {
+    string UserName = 1;
+}
+
+message BaseMsgInfo {
+    uint32  ID          = 1;
+    bytes   Data        = 2;
+    bool    NeedReplay  = 3;
+    uint32  MsgID       = 4;    //配合NeedReplay
+}
