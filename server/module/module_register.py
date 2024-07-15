@@ -15,7 +15,7 @@ class ModuleRegister:
     @staticmethod
     def unregister(enum_module_type):
         if enum_module_type not in ModuleRegister.modules:
-            Log.error("Module with name {} does not exist.", enum_module_type.name)
+            Log.warning("Module with name {} does not exist.", enum_module_type.name)
             return
         del ModuleRegister.modules[enum_module_type]
 

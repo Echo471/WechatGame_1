@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from const.module_const import EModule
+from helper.log_helper import Log
 from module.log_module import LogModule
 from module.module_register import ModuleRegister
 
@@ -12,3 +13,8 @@ def register_module():
 
 if __name__ == '__main__':
     register_module()
+
+    Log.info("this is a info log")
+    Log.warning("this is a warning log")
+    Log.error("this is a error log")
+
