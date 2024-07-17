@@ -6,3 +6,6 @@ class BaseModule(ABC):
     @abstractmethod
     def register():
         pass
+
+    def __del__(self, self1):
+        pass

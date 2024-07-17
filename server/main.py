@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 import time
 
-from const.module_const import EModule
 from module.log_module import LogModule
-from module.module_register import ModuleRegister
+from module.login.login_module import LoginModule
 from module.net_module import NetModule
 
 
 def register_module():
     LogModule.register()
     NetModule.register()
+    LoginModule.register()
 
 
 if __name__ == '__main__':

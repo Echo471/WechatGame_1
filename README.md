@@ -11,6 +11,7 @@
 
 1. 环境 python 3.12.4
 2. 日志库 pip install loguru
+3. websocket： pip install websockets
 
 # 客户端proto文件处理
 1. pbjs C:\Users\wangjinsheng\Desktop\shared\WechatGame_1\protobuf\proto\base.proto  --ts   C:\Users\wangjinsheng\Desktop\shared\WechatGame_1\client\assets\scripts\net\protobuf\proto\base.ts
