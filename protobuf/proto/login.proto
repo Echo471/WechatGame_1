@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+message LoginRequest {
+    uint64  UserID = 1;
+}
+
+enum LOGIN_RET {
+    SUCCESS = 0;
+    FAILED  = 1;
+}
+
+message LoginReplay {
+    LOGIN_RET ret = 1;
+}

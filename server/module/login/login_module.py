@@ -18,9 +18,8 @@ class LoginModule(BaseModule):
         # 注册网络事件
         ModuleRegister.get(EModule.WebSocket).register_msg(1, self.on_player_login)
 
-
     def __del__(self):
-        super().__del__(self)
+        super().__del__()
         pass
 
     def on_player_login(self, player_id: int, web_socket: WebSocketServerProtocol) -> None:

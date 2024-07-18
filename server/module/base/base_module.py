@@ -7,5 +7,5 @@ class BaseModule(ABC):
     def register():
         pass
 
-    def __del__(self, self1):
+    def __del__(self):
         pass

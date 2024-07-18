@@ -19,16 +19,21 @@ class NetModule(BaseModule):
         self.msg_registry: Dict[int, callable] = {}
 
 # [start]: websocket
-    def start(self):
+    async def start(self):
         self.server = websockets.serve(self.on_connection, "127.0.0.1", 8888)
-        asyncio.get_event_loop().run_until_complete(self.server)
-        asyncio.get_event_loop().run_forever()
+        await self.server
 
     async def on_message(self, websocket):
         while True:
             recv_text = await websocket.recv()
-            Log.info("接收到消息：", recv_text)
-            # TODO: 消息处理
+            # try:
+            #     msg = recv_text.split(":")
+            #     msg_id = int(msg[0])
+            #     msg_data = msg[1]
+            #     if msg_id in self.msg_registry:
+            #         self.msg_registry[msg_id](msg_data)
+            #     else:
+            #         Log.error("未注册的消息id", msg_id)
 
     # 握手并且接收数据
     async def on_connection(self, websocket, path):
@@ -54,5 +59,5 @@ class NetModule(BaseModule):
     @staticmethod
     def register():
         ins = NetModule()
-        asyncio.run(ins.start())
+        asyncio.create_task(ins.start())
         ModuleRegister.register(EModule.WebSocket, ins)
