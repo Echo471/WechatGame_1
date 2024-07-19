@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import asyncio
-
 from module.log_module import LogModule
 from module.login.login_module import LoginModule
 from module.net_module import NetModule
 from protobuf.proto_register import print_all_proto
-
 
 def register_module():
     LogModule.register()

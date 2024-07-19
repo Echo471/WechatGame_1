@@ -5,7 +5,7 @@ from protobuf.proto_register import ProtoEnum, get_proto_cls
 
 class ProtobufHelper:
     @staticmethod
-    def deserialize_msg(msg: bytes) -> (ProtoEnum , callable):
+    def deserialize_msg(msg: bytes) -> (ProtoEnum, callable, int, bool):
         base_msg = base_pb2.BaseMsg()
         base_msg.ParseFromString(msg)
 
@@ -15,7 +15,7 @@ class ProtobufHelper:
         msg = msg_cls()
         msg.ParseFromString(base_msg.Data)
 
-        return msg_id, msg
+        return msg_id, msg, base_msg.ReplyID, base_msg.IsRequest
 
     @staticmethod
     def serialize_msg(msg, reply_id: int, is_replay: bool) -> bytes:
@@ -30,6 +30,3 @@ class ProtobufHelper:
         base_msg.IsReply = is_replay
 
         return base_msg.SerializeToString()
-
-
-

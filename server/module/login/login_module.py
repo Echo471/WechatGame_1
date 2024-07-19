@@ -3,6 +3,7 @@ from typing import Dict
 from websockets import WebSocketServerProtocol
 
 from const.module_const import EModule
+from const.server_event import ServerEvent
 from helper.log_helper import Log
 from module.base.base_module import BaseModule
 from module.login.login_define import UserInfo, LoginInfo
@@ -14,6 +15,8 @@ class LoginModule(BaseModule):
     def __init__(self):
         super().__init__()
         self.dict_on_line_player: Dict[int, LoginInfo] = {}
+
+        self.auto_listener(ServerEvent.ON_WEBSOCKET_DISCONNECT, self.on_player_logout_by_web_socket)
 
         # 注册网络事件
         ModuleRegister.get(EModule.WebSocket).register_msg(1, self.on_player_login)
@@ -36,6 +39,11 @@ class LoginModule(BaseModule):
 
         if player_id in self.dict_on_line_player:
             del self.dict_on_line_player[player_id]
+
+    def on_player_logout_by_web_socket(self, web_socket: WebSocketServerProtocol) -> None:
+        for player_id, login_info in self.dict_on_line_player.items():
+            if login_info.web_socket == web_socket:
+                self.on_player_logout(player_id)
 
     def get_player_web_socket(self, player_id: int) -> WebSocketServerProtocol | None:
         if player_id in self.dict_on_line_player:
