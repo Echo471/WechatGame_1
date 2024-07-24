@@ -2,8 +2,10 @@ import time
 
 
 class Team:
-    def __init__(self, team_id):
+    def __init__(self, team_id,name,description):
         self.team_id = team_id
+        self.name = name
+        self.description = description
         self.users = []
         self.observer = []
         self.game_started = False
@@ -11,6 +13,10 @@ class Team:
 
     def add_user(self, user):
         self.users.append(user)
+
+    def remove_user(self, user):
+        if user in self.users:
+            self.users.remove(user)
 
     def start_game(self):
         self.game_started = True
@@ -30,3 +36,17 @@ class Team:
             return None
         # 返回游戏开始后的经过时间
         return time.time() - self.game_timer
+
+    def add_observer(self, observer):
+        # 添加观战者
+        self.observer.append(observer)
+
+    def remove_observer(self, observer):
+        # 删除观战者
+        if observer in self.observer:
+            self.observer.remove(observer)
+
+    def notify_observers(self, message):
+        # 通知所有观战者
+        for observer in self.observer:
+            observer.update(message)
