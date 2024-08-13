@@ -1,20 +1,29 @@
-import { encodeBaseMsgInfo, decodeBaseMsgInfo } from "./proto/base";
-import { encodeLoginInfo, decodeLoginInfo } from "./proto/base";
+import { encodeBaseMsg, decodeBaseMsg } from "./proto/base";
+import { encodeLoginRequest, decodeLoginRequest, encodeLoginReplay, decodeLoginReplay } from "./proto/login";
 
-interface ProtoFuncs
+interface ProtoInfos
 {
     EncodeFunc: (msg: any) => Uint8Array;
     DecodeFunc: (data: Uint8Array) => any;
 }
 
+
+export enum NetMsgID
+{
+    CLSID_BaseMsgID = 0,
+    CLSID_LoginInfo       = 1,
+    CLSID_LoginRet        = 2,
+}
+
 export class NetMsgContainer 
 {
-    private static ProtoID2Map: Map<number, ProtoFuncs> = new Map<number, ProtoFuncs>([
-        [1, { EncodeFunc: encodeBaseMsgInfo, DecodeFunc: decodeBaseMsgInfo }],
-        [2, { EncodeFunc: encodeLoginInfo, DecodeFunc: decodeLoginInfo }],
+    private static ProtoID2Map: Map<number, ProtoInfos> = new Map<number, ProtoInfos>([
+        [NetMsgID.CLSID_BaseMsgID, { EncodeFunc: encodeBaseMsg, DecodeFunc: decodeBaseMsg }],
+        [NetMsgID.CLSID_LoginInfo, { EncodeFunc: encodeLoginRequest, DecodeFunc: decodeLoginRequest }],
+        [NetMsgID.CLSID_LoginRet, { EncodeFunc: encodeLoginReplay, DecodeFunc: decodeLoginReplay }],
     ]);
 
-    public static encodeMsg(msgID: number, msg: any): Uint8Array 
+    public static encodeMsg(msgID: number, msg: any): Uint8Array | null
     {
         let protoFuncs = NetMsgContainer.ProtoID2Map.get(msgID);
         if (protoFuncs != null) {
@@ -33,10 +42,4 @@ export class NetMsgContainer
     }
 
 
-}
-
-export enum NetMsgID
-{
-    BaseMsgInfo     = 1,
-    LoginInfo       = 2,
 }

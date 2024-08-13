@@ -1,52 +1,43 @@
-export interface BaseMsg {
-  MsgID?: number;
-  Data?: Uint8Array;
-  ReplayID?: number;
-  IsReplay?: boolean;
+export const enum LOGIN_RET {
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
 }
 
-export function encodeBaseMsg(message: BaseMsg): Uint8Array {
+export const encodeLOGIN_RET: { [key: string]: number } = {
+  SUCCESS: 0,
+  FAILED: 1,
+};
+
+export const decodeLOGIN_RET: { [key: number]: LOGIN_RET } = {
+  0: LOGIN_RET.SUCCESS,
+  1: LOGIN_RET.FAILED,
+};
+
+export interface LoginRequest {
+  UserID?: Long;
+}
+
+export function encodeLoginRequest(message: LoginRequest): Uint8Array {
   let bb = popByteBuffer();
-  _encodeBaseMsg(message, bb);
+  _encodeLoginRequest(message, bb);
   return toUint8Array(bb);
 }
 
-function _encodeBaseMsg(message: BaseMsg, bb: ByteBuffer): void {
-  // optional uint32 MsgID = 1;
-  let $MsgID = message.MsgID;
-  if ($MsgID !== undefined) {
+function _encodeLoginRequest(message: LoginRequest, bb: ByteBuffer): void {
+  // optional uint64 UserID = 1;
+  let $UserID = message.UserID;
+  if ($UserID !== undefined) {
     writeVarint32(bb, 8);
-    writeVarint32(bb, $MsgID);
-  }
-
-  // optional bytes Data = 2;
-  let $Data = message.Data;
-  if ($Data !== undefined) {
-    writeVarint32(bb, 18);
-    writeVarint32(bb, $Data.length), writeBytes(bb, $Data);
-  }
-
-  // optional uint32 ReplayID = 3;
-  let $ReplayID = message.ReplayID;
-  if ($ReplayID !== undefined) {
-    writeVarint32(bb, 24);
-    writeVarint32(bb, $ReplayID);
-  }
-
-  // optional bool IsReplay = 4;
-  let $IsReplay = message.IsReplay;
-  if ($IsReplay !== undefined) {
-    writeVarint32(bb, 32);
-    writeByte(bb, $IsReplay ? 1 : 0);
+    writeVarint64(bb, $UserID);
   }
 }
 
-export function decodeBaseMsg(binary: Uint8Array): BaseMsg {
-  return _decodeBaseMsg(wrapByteBuffer(binary));
+export function decodeLoginRequest(binary: Uint8Array): LoginRequest {
+  return _decodeLoginRequest(wrapByteBuffer(binary));
 }
 
-function _decodeBaseMsg(bb: ByteBuffer): BaseMsg {
-  let message: BaseMsg = {} as any;
+function _decodeLoginRequest(bb: ByteBuffer): LoginRequest {
+  let message: LoginRequest = {} as any;
 
   end_of_message: while (!isAtEnd(bb)) {
     let tag = readVarint32(bb);
@@ -55,27 +46,56 @@ function _decodeBaseMsg(bb: ByteBuffer): BaseMsg {
       case 0:
         break end_of_message;
 
-      // optional uint32 MsgID = 1;
+      // optional uint64 UserID = 1;
       case 1: {
-        message.MsgID = readVarint32(bb) >>> 0;
+        message.UserID = readVarint64(bb, /* unsigned */ true);
         break;
       }
 
-      // optional bytes Data = 2;
-      case 2: {
-        message.Data = readBytes(bb, readVarint32(bb));
-        break;
-      }
+      default:
+        skipUnknownField(bb, tag & 7);
+    }
+  }
 
-      // optional uint32 ReplayID = 3;
-      case 3: {
-        message.ReplayID = readVarint32(bb) >>> 0;
-        break;
-      }
+  return message;
+}
 
-      // optional bool IsReplay = 4;
-      case 4: {
-        message.IsReplay = !!readByte(bb);
+export interface LoginReplay {
+  ret?: LOGIN_RET;
+}
+
+export function encodeLoginReplay(message: LoginReplay): Uint8Array {
+  let bb = popByteBuffer();
+  _encodeLoginReplay(message, bb);
+  return toUint8Array(bb);
+}
+
+function _encodeLoginReplay(message: LoginReplay, bb: ByteBuffer): void {
+  // optional LOGIN_RET ret = 1;
+  let $ret = message.ret;
+  if ($ret !== undefined) {
+    writeVarint32(bb, 8);
+    writeVarint32(bb, encodeLOGIN_RET[$ret]);
+  }
+}
+
+export function decodeLoginReplay(binary: Uint8Array): LoginReplay {
+  return _decodeLoginReplay(wrapByteBuffer(binary));
+}
+
+function _decodeLoginReplay(bb: ByteBuffer): LoginReplay {
+  let message: LoginReplay = {} as any;
+
+  end_of_message: while (!isAtEnd(bb)) {
+    let tag = readVarint32(bb);
+
+    switch (tag >>> 3) {
+      case 0:
+        break end_of_message;
+
+      // optional LOGIN_RET ret = 1;
+      case 1: {
+        message.ret = decodeLOGIN_RET[readVarint32(bb)];
         break;
       }
 

@@ -4,5 +4,5 @@ message BaseMsg {
     uint32  MsgID = 1;
     bytes   Data  = 2;
     uint32  ReplayID = 3; //应答id
-    bool    IsRequest = 4;
+    bool    IsReplay = 4;
 }

@@ -1,11 +1,13 @@
-import { SingleBase } from "../util/single_base";
-import { BaseMsgInfo, decodeBaseMsgInfo } from "./protobuf/base";
-import { NetMsgContainer, NetMsgID } from "./protobuf/message/net_message_container";
+import {NetMsgContainer, NetMsgID} from "./protobuf/message/net_message_container";
+import { BaseMsg, decodeBaseMsg } from "./protobuf/message/proto/base";
+import { SingleBase } from "../base_lib/single_base";
+import { Log } from "../base_lib/log_helper";
 
-class NetMgr extends SingleBase<NetMgr>
+
+export class NetMgr extends SingleBase<NetMgr>
 {
     private _IsConnected: boolean = false;
-    private _Socket: WebSocket = null;
+    private _Socket: WebSocket;
 
     private _RequestNum: number = 0;
     private _RequestCallbackCache: Map<number, number> = new Map<number, number>();
@@ -32,33 +34,37 @@ class NetMgr extends SingleBase<NetMgr>
 
     private OnMessage(event: MessageEvent): void
     {
-        let data = new Uint8Array(event.data);
-        let BaseMsg: BaseMsgInfo = decodeBaseMsgInfo(data);
-        if(BaseMsg.NeedReplay)
-        {
-            let msgID = this._RequestCallbackCache.get(BaseMsg.MsgID);
-            if(msgID != null)
-            {
-                this._RequestCallbackCache.delete(BaseMsg.MsgID);
-            }
-        }
+        Log.info("OnMessage: ", event.data);
+        // let data = new Uint8Array(event.data);
+        // let BaseMsg: BaseMsg = decodeBaseMsg(data);
+        // if(BaseMsg.NeedReplay)
+        // {
+        //     let msgID = this._RequestCallbackCache.get(BaseMsg.MsgID);
+        //     if(msgID != null)
+        //     {
+        //         this._RequestCallbackCache.delete(BaseMsg.MsgID);
+        //     }
+        // }
         // TODO: 处理网络消息
     }
 
     private OnClose(event: CloseEvent): void
     {
         // TODO: 处理网络关闭
+        this._IsConnected = false;
+        Log.info("OnClose: ", event);
     }
 
     private OnError(event: Event): void
     {
         // TODO： 处理网络错误
+        Log.error("OnError: ", event);
     }
 
     protected OnInit(): void
     {
         // TODO: 使用正确ip和port
-        this.Connect("127.0.0.1", 8080);
+        this.Connect("127.0.0.1", 8888);
     }
 
     protected OnRelease(): void
@@ -66,7 +72,6 @@ class NetMgr extends SingleBase<NetMgr>
         if(this.IsConnected)
         {
             this._Socket.close();
-            this._Socket = null;
         }
     }
 
@@ -76,7 +81,7 @@ class NetMgr extends SingleBase<NetMgr>
     }
 
     // 直接push，不等返回
-    Push(msgID: number, msg: any): void
+    Push(msgID: NetMsgID, msg: any): void
     {
         if(this.IsConnected)
         {
@@ -87,14 +92,15 @@ class NetMgr extends SingleBase<NetMgr>
                 return;
             }
             
-            let BaseMsg: BaseMsgInfo = 
+            let BaseMsg: BaseMsg = 
             {
                 MsgID: msgID,
                 Data: data,
-                NeedReplay: false,
+                ReplayID: 0,
+                IsReplay: false,
             };
 
-            let sendData = NetMsgContainer.encodeMsg(NetMsgID.BaseMsgInfo, BaseMsg);
+            let sendData = NetMsgContainer.encodeMsg(NetMsgID.CLSID_BaseMsgID, BaseMsg);
             if(sendData == null)
             {
                 console.error("SendMsg: ", msgID, msg);
@@ -105,34 +111,34 @@ class NetMgr extends SingleBase<NetMgr>
     }
 
     // 异步请求，等待返回
-    *SyncRequest(msgEnum: number, msg: any， timeout: number = 5000): Generator<number, any, any>
+    *SyncRequest(msgEnum: number, msg: any, timeout: number = 5000): Generator<number, any, any>
     {
-        if(this.IsConnected)
-        {
-            let data = NetMsgContainer.encodeMsg(msgEnum, msg);
-            if(data == null)
-            {
-                console.error("SendMsg: ", msgEnum, msg);
-                return;
-            }
-            let mID = this.GenMsgID();
-            let BaseMsg: BaseMsgInfo = 
-            {
-                ID: msgEnum,
-                Data: data,
-                NeedReplay: true,
-                MsgID: mID,
-            };
+        // if(this.IsConnected)
+        // {
+        //     let data = NetMsgContainer.encodeMsg(msgEnum, msg);
+        //     if(data == null)
+        //     {
+        //         console.error("SendMsg: ", msgEnum, msg);
+        //         return;
+        //     }
+        //     let mID = this.GenMsgID();
+        //     let BaseMsg: BaseMsg = 
+        //     {
+        //         MsgID: msgEnum,
+        //         Data: data,
+        //         NeedReplay: true,
+        //         MsgID: mID,
+        //     };
 
-            let sendData = NetMsgContainer.encodeMsg(NetMsgID.BaseMsgInfo, BaseMsg);
-            if(sendData == null)
-            {
-                console.error("SendMsg: ", msgEnum, msg);
-                return;
-            }
-            this._Socket.send(sendData);
-            this._RequestCallbackCache.set(mID, msgEnum);
-        }
+        //     let sendData = NetMsgContainer.encodeMsg(NetMsgID.BaseMsgInfo, BaseMsg);
+        //     if(sendData == null)
+        //     {
+        //         console.error("SendMsg: ", msgEnum, msg);
+        //         return;
+        //     }
+        //     this._Socket.send(sendData);
+        //     this._RequestCallbackCache.set(mID, msgEnum);
+        // }
     }
 
 }

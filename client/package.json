@@ -1,10 +1,7 @@
 {
-  "name": "client2",
-  "uuid": "b2c863da-5623-46fb-8b76-91b67bb5b6c8",
+  "name": "client",
+  "uuid": "9a39df1a-de00-452f-b7cb-af09bf07345c",
   "creator": {
     "version": "3.8.2"
-  },
-  "dependencies": {
-    "google-protobuf": "^3.21.2"
   }
 }

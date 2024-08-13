@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Callable
 
+from const.server_event import ServerEvent
 from helper.log_helper import Log
 from lib.event import Event
 
@@ -35,3 +36,8 @@ class BaseModule(ABC):
         for event, callback in self.Listener.items():
             event.remove_listener(callback)
         self.Listener.clear()
+
+    def on_tick(self, delta_time: float):
+        Log.info( "on_tick", delta_time)
+        pass
+

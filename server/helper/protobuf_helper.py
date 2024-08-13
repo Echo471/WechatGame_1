@@ -15,7 +15,7 @@ class ProtobufHelper:
         msg = msg_cls()
         msg.ParseFromString(base_msg.Data)
 
-        return msg_id, msg, base_msg.ReplyID, base_msg.IsRequest
+        return msg_id, msg, base_msg.ReplyID, base_msg.IsReply
 
     @staticmethod
     def serialize_msg(msg, reply_id: int, is_replay: bool) -> bytes:

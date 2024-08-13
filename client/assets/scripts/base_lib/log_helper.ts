@@ -1,27 +1,7 @@
+import { GameConst } from "../global/global_const";
+import { ELogLevel, BuildVersion } from "../define/log_define";
+
 declare let console_org: Console;
-
-enum BuildVersion//构建版本
-{
-	Debug = 0,
-	Release = 1, //
-}
-
-enum ELogLevel
-{
-	NOLOG = 0,
-	ERROR = 1,
-	WARN = 2,
-	INFO = 3,
-	DEBUG = 4,
-}
-
-class ILogMonitor
-{
-	ThrowException(msg: string)
-	{
-
-	}
-}
 
 function lightAssert(condition: boolean, ...params: any[])
 {
@@ -43,6 +23,14 @@ function lightAssert(condition: boolean, ...params: any[])
 	}
 }
 
+class ILogMonitor
+{
+	ThrowException(msg: string)
+	{
+
+	}
+}
+
 function strongAssert(condition: boolean, ...params: any[])
 {
 	if (condition)
@@ -56,7 +44,7 @@ function strongAssert(condition: boolean, ...params: any[])
 	Log.LogMonitor.ThrowException(str);
 }
 
-class Log
+export class Log
 {
     static LogLevel: ELogLevel = ELogLevel.DEBUG;
 	static LogMonitor: ILogMonitor = null;

@@ -17,7 +17,7 @@ class NetModule(BaseModule):
     def __init__(self):
         super().__init__()
         Log.info("websocket server start")
-        self.msg_registry: Dict[int, callable] = {}
+        self.proto_registry: Dict[int, callable] = {}
         self.wait_replay: Dict[int, callable] = {}
 
     # [start]: websocket
@@ -36,15 +36,15 @@ class NetModule(BaseModule):
 
     async def process_message(self, websocket, recv_data):
         Log.info("接收到消息：", recv_data)
-        msg_id, msg_data, replay_id, is_request = ProtobufHelper.deserialize_msg(recv_data)
-        if not self.msg_registry.get(msg_id):
+        msg_id, msg_data, replay_id, IsReply = ProtobufHelper.deserialize_msg(recv_data)
+        if not self.proto_registry.get(msg_id):
             Log.error("未注册的消息ID：", msg_id)
             return
 
-        if is_request:
-            await self.handle_request(websocket, msg_id, msg_data, replay_id)
-        else:
+        if IsReply:
             await self.handle_reply(msg_data, replay_id)
+        else:
+            await self.handle_request(websocket, msg_id, msg_data, replay_id)
 
     async def handle_reply(self, msg_data, replay_id):
         response_func = self.wait_replay.get(replay_id)
@@ -57,16 +57,17 @@ class NetModule(BaseModule):
     async def handle_request(self, websocket, msg_id, msg_data, replay_id):
         if ProtobufRegister.get(msg_id).replay_msg_cls:
             replay = ProtobufRegister.get(msg_id).replay_msg_cls()
-            await self.msg_registry[msg_id](msg_data, replay)
+            await self.proto_registry[msg_id](msg_data, replay)
             await websocket.send(ProtobufHelper.serialize_msg(replay, replay_id, True))
         else:
-            await self.msg_registry[msg_id](msg_data)
+            await self.proto_registry[msg_id](msg_data)
 
 
     def request(self):
         pass
 
-    def push(self):
+
+    def push(self, msg):
         pass
 
     async def on_connection(self, websocket, path):
@@ -76,15 +77,15 @@ class NetModule(BaseModule):
     # [end]: websocket
 
     # [start]: register
-    def register_msg(self, msg_id: int, callback: callable):
-        if msg_id in self.msg_registry:
+    def register_proto(self, msg_id: int, callback: callable):
+        if msg_id in self.proto_registry:
             Log.error("消息id已经注册", msg_id)
             return
-        self.msg_registry[msg_id] = callback
+        self.proto_registry[msg_id] = callback
 
-    def unregister_msg(self, msg_id: int):
-        if msg_id in self.msg_registry:
-            del self.msg_registry[msg_id]
+    def unregister_proto(self, msg_id: int):
+        if msg_id in self.proto_registry:
+            del self.proto_registry[msg_id]
         else:
             Log.error("消息id未注册", msg_id)
 

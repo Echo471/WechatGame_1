@@ -28,3 +28,8 @@
 
 # todo
 1. 协议自动化注册工具（不急）
+
+
+
+#备忘
+1. npm install long

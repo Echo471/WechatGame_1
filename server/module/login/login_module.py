@@ -19,7 +19,7 @@ class LoginModule(BaseModule):
         self.auto_listener(ServerEvent.ON_WEBSOCKET_DISCONNECT, self.on_player_logout_by_web_socket)
 
         # 注册网络事件
-        ModuleRegister.get(EModule.WebSocket).register_msg(1, self.on_player_login)
+        ModuleRegister.get(EModule.WebSocket).register_proto(1, self.on_player_login)
 
     def __del__(self):
         super().__del__()
